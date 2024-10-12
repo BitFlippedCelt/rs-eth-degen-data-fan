@@ -3,3 +3,4 @@
 
 .env*
 jwtsecret.txt
+.cache/

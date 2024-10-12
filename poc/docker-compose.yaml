@@ -1,0 +1,79 @@
+version: "3.5"
+services:
+    nats:
+        image: nats
+        ports:
+            - 4222:4222
+            - 8222:8222
+        command: "--cluster_name nats_local --cluster nats://0.0.0.0:6222 --http_port 8222 "
+        networks: [ "apps" ]
+
+    scylla:
+        image: scylladb/scylla
+        ports:
+            - 9042:9042
+        networks: [ "apps" ]
+
+    redis:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+        networks: [ "apps" ]
+
+    # redis-cluster:
+    #     image: 'redis:alpine'
+    #     command: redis-cli --cluster create 172.28.0.31:6373 172.28.0.32:6374 172.28.0.33:6375 --cluster-yes
+    #     ports:
+    #         - '6379:6379'
+    #     networks:
+    #         apps:
+    #             ipv4_address: 172.28.0.30
+    #     depends_on:
+    #         - redis-node-1
+    #         - redis-node-2
+    #         - redis-node-3
+    # redis-node-1:
+    #     image: 'redis:alpine'
+    #     command: redis-server /usr/local/etc/redis/redis.conf
+    #     ports:
+    #         - '6373:6373'
+    #     volumes:
+    #         - redis-node-1-data:/var/lib/redis
+    #         - ./docker/redis-node-1.conf:/usr/local/etc/redis/redis.conf
+    #     networks:
+    #         apps:
+    #             ipv4_address: 172.28.0.31
+    # redis-node-2:
+    #     image: 'redis:alpine'
+    #     command: redis-server /usr/local/etc/redis/redis.conf
+    #     ports:
+    #         - '6374:6374'
+    #     volumes:
+    #         - redis-node-2-data:/var/lib/redis
+    #         - ./docker/redis-node-2.conf:/usr/local/etc/redis/redis.conf
+    #     networks:
+    #         apps:
+    #             ipv4_address: 172.28.0.32
+    # redis-node-3:
+    #     image: 'redis:alpine'
+    #     command: redis-server /usr/local/etc/redis/redis.conf
+    #     ports:
+    #         - '6375:6375'
+    #     volumes:
+    #         - redis-node-3-data:/var/lib/redis
+    #         - ./docker/redis-node-3.conf:/usr/local/etc/redis/redis.conf
+    #     networks:
+    #         apps:
+    #             ipv4_address: 172.28.0.33
+
+networks:
+    apps:
+        name: apps
+        ipam:
+            config:
+                - subnet: 172.28.0.0/16
+
+volumes:
+    redis-node-1-data:
+    redis-node-2-data:
+    redis-node-3-data:
